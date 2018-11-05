@@ -1,0 +1,29 @@
+{
+  "name": "top-nine",
+  "version": "1.0.0",
+  "description": "A instagram application that builds an image ",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/jcblw/top-nine"
+  },
+  "author": "Jacob Lowe",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "2.0.1",
+    "cheerio": "^1.0.0-rc.2",
+    "date-fns": "^1.29.0",
+    "drawable": "^0.3.0",
+    "express": "^4.16.4",
+    "got": "^9.3.1",
+    "puppeteer": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.5"
+  }
+}
