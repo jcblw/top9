@@ -1,11 +1,27 @@
-# top9.io
+# top9
 
-Get your instagram top nine photos.
+A nodejs app to create top nine photos for instagram.
+
+# usage
+
+You will need
+
+- [nodejs](https://nodejs.org/en/)!
+- [yarn](https://yarnpkg.com/en/)!
+
+This should setup just about everything. Right now, `nodejs >= 8` is needed.
+
+```shell
+yarn
+mkdir data
+yarn start
+```
+
+Visit `/top9/:username` and it will kick of a child process. The process will get all the profile Instagram info from a public profile and then create the image in the `/data` directory.
 
 TODO:
 
 - frontend
-- put scraper in worker
 - ws to frontend
 - more agressive caching
 - private page errors
