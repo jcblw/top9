@@ -12,7 +12,6 @@ const getIndividualMeta = page => async (id, timeout = 1000) => {
     element && element.click();
   }, id);
   await sleep(timeout);
-  console.log(`parsing info for post ${id}`);
   // popover
   const { likes, comments, image, createdAt } = await page.evaluate(() => {
     const post = document.querySelector("[role='dialog'] article");

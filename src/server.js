@@ -1,5 +1,6 @@
 const express = require("express");
 const puppeteer = require("puppeteer");
+const { fork } = require("child_process");
 const isSameYear = require("date-fns/is_same_year");
 const fs = require("fs");
 const path = require("path");
@@ -30,15 +31,21 @@ const write = promisify(fs.writeFile);
     // loop variables
     var pageNumber = 1;
     var needsMore = true;
+    var lastPostAmount = 0;
 
     while (needsMore) {
       console.log(`Processing page ${pageNumber} for ${name}`);
       await getVisiblePosts(page, posts);
       await loadMorePosts(page);
       console.log(posts.lastProcessedTime);
-      if (!isSameYear(new Date(posts.lastProcessedTime), yearDate)) {
+      if (
+        !isSameYear(new Date(posts.lastProcessedTime), yearDate) ||
+        // no more posts
+        toArray(posts).length === lastPostAmount
+      ) {
         needsMore = false;
       }
+      lastPostAmount = toArray(posts).length;
       pageNumber += 1;
     }
 
@@ -48,15 +55,14 @@ const write = promisify(fs.writeFile);
       posts.errors.forEach(e => console.error(e));
     }
     delete posts.errors;
-    console.log(`Processing image`);
     const profile = serializeProfile(name, posts, year);
 
-    // cache
-    // const cachepath = path.resolve(
-    //   process.cwd(),
-    //   `./data/${name}-${year}.json`
-    // );
-    // await write(cachepath, JSON.stringify(profile, null, " "));
+    // cache;
+    const cachepath = path.resolve(
+      process.cwd(),
+      `./data/${name}-${year}.json`
+    );
+    await write(cachepath, JSON.stringify(profile, null, " "));
 
     // process image
     const image = await processImage(profile);
@@ -67,11 +73,20 @@ const write = promisify(fs.writeFile);
   app.get("/test-render", async (req, res) => {
     const profile = require(path.resolve(
       process.cwd(),
-      `./data/jcandeli-2018.json`
+      `./data/jcblw-2018.json`
     ));
     const image = await processImage(profile);
     res.contentType("image/png");
     res.send(image);
+  });
+
+  app.get("/top9/:username", async (req, res) => {
+    const child = fork(path.resolve(__dirname, "./child.js"));
+    child.send(req.params.username);
+    child.on("exit", () => {
+      console.log(`${child.pid} child shut down`);
+    });
+    res.send(200);
   });
 
   app.listen(port, () => {
