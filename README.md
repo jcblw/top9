@@ -1,5 +1,7 @@
 # top9
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/jcblw/top9.svg)](https://greenkeeper.io/)
+
 A nodejs app to create top nine photos for instagram.
 
 # usage
